@@ -35,7 +35,6 @@ func CreateMessageWithSender(rawJson []byte) bool {
 		return false
 	}
 
-	log.Printf("alreadyu exists %v, %T", senderStoredInDB, senderStoredInDB)
 	if senderStoredInDB == nil {
 		if err := senderRepo.Store(&sender); err != nil {
 			return false
@@ -43,19 +42,13 @@ func CreateMessageWithSender(rawJson []byte) bool {
 	}
 	if senderStoredInDB != nil {
 		sender.ID = senderStoredInDB.ID
-
 	}
 
-	log.Println("l;jasdjklasdfjklafsdjkl")
 	message.Sender = sender
 	if err := messageRepo.Store(message); err != nil {
 		log.Println(err)
 		return false
 	}
-
-	log.Printf("message: %v", message)
-	log.Printf("sender: %v", sender)
-	log.Println("----")
 
 	return true
 }

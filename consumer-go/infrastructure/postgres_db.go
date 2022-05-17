@@ -33,20 +33,17 @@ func init() {
 	connInfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 		host, username, password, schema)
 
-	fmt.Println("hola")
-	fmt.Println(connInfo)
-
 	var err error
 	DB, err = sql.Open("postgres", connInfo)
 	if err != nil {
 		log.Println(err)
 		panic(err)
 	}
-	// defer DB.Close()
 
 	if err = DB.Ping(); err != nil {
 		log.Println(err)
 		panic(err)
 	}
+
 	log.Println("Database ready to accept connections")
 }

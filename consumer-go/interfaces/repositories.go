@@ -29,7 +29,6 @@ func (repo *SenderRepository) Store(sender *domains.Sender) error {
 		return err
 	}
 
-	log.Printf("insertedID: %v, %T", insertedID, insertedID)
 	sender.ID = insertedID
 	return nil
 }

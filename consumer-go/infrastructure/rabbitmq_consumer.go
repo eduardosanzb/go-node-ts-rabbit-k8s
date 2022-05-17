@@ -7,25 +7,31 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const brokerUrl = "BROKER_URL"
+const (
+	brokerUrl = "BROKER_URL"
+	name      = "QUEUE_NAME"
+)
 
-var serverUrl = os.Getenv(brokerUrl)
+var (
+	serverUrl = os.Getenv(brokerUrl)
+	queueName = os.Getenv(name)
+)
 
-func CreateMessagesChannel(queueName string) <-chan amqp.Delivery {
+type handler func([]byte) bool
 
+func RabbitWorker(id int, fn handler) {
 	connectRabbitMQ, err := amqp.Dial(serverUrl)
 	if err != nil {
+		log.Println("Error dialing the server")
 		panic(err)
 	}
-	defer connectRabbitMQ.Close()
-
 	go func() {
-		log.Printf("closing: %v\n", <-connectRabbitMQ.NotifyClose(make(chan *amqp.Error)))
+		err := <-connectRabbitMQ.NotifyClose(make(chan *amqp.Error))
+		log.Printf("closing the connection to rabbit: %v\n", <-connectRabbitMQ.NotifyClose(make(chan *amqp.Error)))
+		if err != nil {
+			panic(err)
+		}
 	}()
-
-	if err != nil {
-		panic(err)
-	}
 
 	channel, err := connectRabbitMQ.Channel()
 	if err != nil {
@@ -33,28 +39,48 @@ func CreateMessagesChannel(queueName string) <-chan amqp.Delivery {
 	}
 	defer channel.Close()
 
-	channel.Qos(
-		10,    // prefetch count
+	if err := channel.Qos(
+		2,     // prefetch count
 		0,     // prefetch size
 		false, // global
-	)
-
-	messagesChannel, err := channel.Consume(
-		queueName, // queue name
-		"",        // consumer
-		false,     // auto-ack
-		false,     // exclusive
-		false,     // no local
-		false,     // no wait
-		nil,       // arguments
-	)
-
-	if err != nil {
-		log.Println(err)
+	); err != nil {
+		log.Println("Error Creating the output")
+		panic(err)
 	}
 
-	log.Println("Successfully connected to RabbitMQ")
-	log.Println("Waiting for messages")
-
-	return messagesChannel
+	queue, err := channel.QueueDeclare(
+		queueName,
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Println("Error declaring the queue")
+		panic(err)
+	}
+	messagesChannel, err := channel.Consume(
+		queue.Name, // queue name
+		"",         // consumer
+		false,      // auto-ack
+		false,      // exclusive
+		false,      // no local
+		false,      // no wait
+		nil,        // arguments
+	)
+	if err != nil {
+		log.Println("Failed to register a consumer")
+		log.Println(err)
+		panic(err)
+	}
+	for d := range messagesChannel {
+		status := fn(d.Body)
+		if err := d.Ack(!status); err != nil {
+			log.Printf("Error acknowling message: %s", err)
+		} else {
+			log.Println("Acknowledged message")
+		}
+	}
+	log.Printf(" [*]: Waiting for messages.")
 }
