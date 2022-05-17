@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+        - name: consumer
+          image: eduardosanzb/consumer-go
+          env:
+            - name: BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: message-broker
+                  key: url
+            - name: QUEUE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: message-broker
+                  key: queue-name
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-config
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-config
+                  key: password
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: database-config
+                  key: host
+            - name: DB_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  name: database-config
+                  key: schema
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8080

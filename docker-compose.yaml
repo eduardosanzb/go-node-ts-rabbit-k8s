@@ -1,0 +1,66 @@
+version: "3.9"
+services:
+
+  producer-typescript:
+    container_name: unity-producer
+    restart: always
+    build:
+      context: ./producer-typescript
+    environment:
+      NODE_ENV: production
+      PATH_TO_INSERT_INTO_QUEUE: "/to-queue"
+      PORT_SERVER: 8080
+      CHANNEL_NAME: "myQueue"
+      BROKER_URL: "amqp://username:password@rabbitMq:5672"
+    ports:
+      - 80:8080
+
+  consumer-go:
+    container_name: unity-consumer
+    restart: always
+    build:
+      context: ./consumer-go
+    environment:
+      BROKER_URL: amqp://consumer:password@rabbitMq:5672/
+      QUEUE_NAME: myQueue
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      DB_HOST: postgres
+      DB_SCHEMA: postgres
+
+  rabbitMq:
+    image: rabbitmq:3-management
+    container_name: unity-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+     - ./config/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+     - ./config/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+
+  postgres:
+    image: postgres:12
+    container_name: unity-postgres
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+      - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_PASSWORD: password
+
+
+  hasura:
+    image: hasura/graphql-engine
+    container_name: unity-hasura
+    ports:
+      - 8080:8080
+    depends_on:
+      - "postgres"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:password@postgres:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+volumes:
+  data:

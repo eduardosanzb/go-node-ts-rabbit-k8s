@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: unity-ingress
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: producer-service
+              port:
+                number: 8000
+  - host: hasura.localhost
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: hasura-service
+              port:
+                number: 8080
+  - host: rabbitmq.localhost
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: rabbitmq
+              port:
+                number: 15672

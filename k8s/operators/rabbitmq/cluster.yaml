@@ -1,0 +1,27 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq
+  namespace: default
+spec:
+  replicas: 1
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers:
+            - name: rabbitmq
+              volumeMounts:
+              - mountPath: /path/to/exported
+                name: definitions
+            volumes:
+            - name: definitions
+              configMap:
+                name: rabbit-definitions
+  rabbitmq:
+    additionalConfig: |
+      default_user=guest
+      default_pass=guest
+      load_definitions = /path/to/exported/definitions.json
+
