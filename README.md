@@ -61,6 +61,9 @@ I like to put all in the docker compose env.
 e.g. eduardo-local-compose.yaml
 open some ports and play.
 
+You can stress the system with a small code in ./stress-test
+just `go build` or `go run main.go`
+
 ### Docker compose
 
 run the docker compose file
