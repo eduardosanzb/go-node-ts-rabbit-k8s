@@ -52,7 +52,7 @@ The project have the next components:
 - Producer. Built with typescript; which will validate the request and put in the broker
 - Consumer. Built with Go; which will insert the messages into the DB
 
-Potentially the technology for producer/consumer should be swap (given that Go is way superior at concurrent request; yes even better than nodejs [example](https://www.youtube.com/watch?v=h7UEwBaGoVo&t=1s))
+Potentially the technology for producer/consumer should be swap (given that Go is way superior with concurrent request to handle bazillion of requests; yes even better than the *blazingly fast* nodejs [example](https://www.youtube.com/watch?v=h7UEwBaGoVo&t=1s))
 but given that the position required TS more than Go, I wanted to showcase my skills with TS.
 
 ## How to run the dev environment
