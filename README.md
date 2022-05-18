@@ -1,6 +1,7 @@
 # Unity challenge for Eduardo
 
 ## Overview
+```
 
              ┌──────────────────┐
              │                  │
@@ -9,9 +10,9 @@
   POST       │                  │
   /to-queue  │       Producer   │
 ─────────────►                  ├─────┐      ┌──────────────────┐
-             │                  │     │      │                  │
-             │                  │     │      │                  │
-             │                  │     │      │  rabbitMQ        │
+             │  puts valid      │     │      │                  │
+             │ messages into    │     │      │                  │
+             │   the queue      │     │      │  rabbitMQ        │
              │                  │     │      │                  │
              └──────────────────┘     │      │                  │
                                       └──────►                  │
@@ -40,6 +41,7 @@
                                              │             │
                                              │             │
                                              └─────────────┘
+```
 
 ## Structure of the project
 
