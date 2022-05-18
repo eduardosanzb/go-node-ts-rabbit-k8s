@@ -20,7 +20,10 @@ run the docker compose file
 
 ### Kubernetes
 
-Just sh ./k8s/init.sh
+pre-requisits
+You need kind. You can use docker desktop with kind/kind as cluster engine.
+
+Just `sh ./k8s/init.sh`
 
 ## Conclusions
 
