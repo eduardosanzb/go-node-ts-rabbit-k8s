@@ -8,7 +8,7 @@ bla bla
 
 bla bla
 
-## How to run the dev environtment
+## How to run the dev environment
 
 I like to put all in the docker compose env.
 e.g. eduardo-local-compose.yaml
