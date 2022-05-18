@@ -2,22 +2,26 @@
 
 ## Overview
 
+bla bla
+
 ## Structure of the project
+
+bla bla
 
 ## How to run the dev environtment
 
-## How to run the project
+I like to put all in the docker compose env.
+e.g. eduardo-local-compose.yaml
+open some ports and play.
 
 ### Docker compose
 
+run the docker compose file
+
 ### Kubernetes
 
-## How to create the k8s cluster
-
-1. sh cluster.sh
-2. sh postgres
-3. apply
-
-create tables
+Just sh ./k8s/init.sh
 
 ## Conclusions
+
+bla bla bla resulst about my stress tests

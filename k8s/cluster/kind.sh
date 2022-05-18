@@ -24,10 +24,8 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main
 echo "Installing metrics server"
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.5.0/components.yaml
 echo "Patching server: https://github.com/kubernetes-sigs/kind/issues/398#issuecomment-871095729 "
-
-BASEDIR=$(dirname $0)
-PATHFILE=$BASEDIR/metric-server-patch.yaml
-kubectl patch deployment metrics-server -n kube-system --patch "$(PATHFILE)"
+kubectl patch -n kube-system deployment metrics-server --type=json \
+  -p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
 
 
 echo "Waiting for ingress to boot the controller"

@@ -15,11 +15,11 @@ func main() {
 	}
 	stressCfg := pewpew.StressConfig{
 		Count:       10000,
-		Concurrency: 50,
+		Concurrency: 150,
 		Verbose:     false,
 		Targets: []pewpew.Target{{
 			URL: url,
-      Timeout: "2s",
+      Timeout: "1s",
       Method:  "POST",
       Body: `{
         "ts": "1530228282",

@@ -3,6 +3,7 @@ services:
   unity:
     container_name: unity
     image: eduardosanzb/devsh-darwin:arm64
+    privileged: true
     restart: always
     volumes:
       - ".:/home/eduardosanzb/app"
